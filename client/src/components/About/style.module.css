@@ -9,18 +9,53 @@
     background: url('./Bg1.png');
 }
 
+.mainBox a {
+    text-decoration: none;
+}
+
+.mainBox a:hover {
+    text-decoration: none;
+    color: #ff7300;
+}
+
+.mainBox a:visited {
+    color: #ffffff;
+}
+
+.contactsBox {
+    width: 50%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.linkBtn {
+    background-color: #0b94ca;
+    padding: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: -3px 3px 0px 3px rgba(4, 33, 56, 0.2);
+    -moz-box-shadow: -3px 3px 0px 3px rgba(4, 33, 56, 0.2);
+    box-shadow: -3px 3px 0px 3px rgba(4, 33, 56, 0.2);
+}
+
+.linkBtn:hover {
+    background-color: #1ba3da;
+}
+
 .textBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 30px 30px 0px 30px;
     color: #ffffff;
 }
 
 .textBox p {
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .stackBox {
     display: flex ;
-    padding: 0px 30px;
+    padding: 0px 60px;
 }
 
 .iconBackground {
@@ -32,11 +67,31 @@
     align-items: center;
     justify-content: center;
     margin: 15px;
+    -webkit-box-shadow: -3px 2px 0px 3px rgba(4, 33, 56, 0.2);
+    -moz-box-shadow: -3px 2px 0px 3px rgba(4, 33, 56, 0.2);
+    box-shadow: -3px 2px 0px 3px rgba(4, 33, 56, 0.2);
 }
 
 .projectBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: #ffffff;
     padding: 0px 30px 50px 30px;
+}
+
+.pLinkBtn {
+    width: 200px;
+    background-color: #0b94ca;
+    padding: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: -3px 3px 0px 3px rgba(4, 33, 56, 0.2);
+    -moz-box-shadow: -3px 3px 0px 3px rgba(4, 33, 56, 0.2);
+    box-shadow: -3px 3px 0px 3px rgba(4, 33, 56, 0.2);
+}
+
+.pLinkBtn:hover {
+    background-color: #1ba3da;
 }
 
 .closeBtn {

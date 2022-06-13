@@ -146,7 +146,7 @@ export default function Game() {
         camera.position.x = initialCameraPositionX;
         camera.position.z = distance;
 
-        const text = new myReact('Hi, my name is {enter name}')
+        const text = new myReact('Hi, my name is Anton Atangulov')
         text.position.z = 2
         text.position.x = (-boardWidth/2) * zoom + 100
         text.position.y = -200
@@ -199,8 +199,6 @@ export default function Game() {
             scene.add(lane.mesh);
             lanes.push(lane);
           }
-
-          console.log(lanes, -1428-714, 1428+714)
 
           function move(direction) {
             const finalPositions = moves.reduce((position,move) => {

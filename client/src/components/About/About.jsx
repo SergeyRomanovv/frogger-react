@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import style from './style.module.css';
 
 export default function About({ setAbout, about }) {
@@ -10,8 +10,16 @@ export default function About({ setAbout, about }) {
         <div className={style.mainBox}>
             <div className={style.contentBox}>
                 <div className={style.textBox}>
-                    <p>Hello! My name is ...enter name</p>
-                    <p>Im a frontend developer</p>
+                    <p style={{fontSize: 20}}>Hello! My name is Anton Atnagulov</p>
+                    <p>I'm a frontend developer</p>
+                    <div className={style.contactsBox}>
+                        <div className={style.linkBtn}>
+                             <a href='https://github.com/AntonAtnagulov'> My GitHub</a>
+                        </div>
+                        <div className={style.linkBtn}>
+                            <a href='https://t.me/antonatnagulov'>My Telegram</a>
+                        </div>
+                    </div>
                     <p>
                         My stack: React, Redux, PostgreSQL, NodeJS, THREE JS,
                         Sequelize, Socket.IO
@@ -19,11 +27,6 @@ export default function About({ setAbout, about }) {
                     <div onClick={closeHandler} className={style.closeBtn}>
                         <img src="./x-circle.svg" />
                     </div>
-                    {/* <div className={style.iconBackground }>
-                <a href="https://t.me/antonatnagulov">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Telegram_logo.svg/512px-Telegram_logo.svg.png" alt="Telegram" width="50px"/>
-                </a>
-            </div> */}
                 </div>
 
                 <div className={style.stackBox}>
@@ -93,23 +96,32 @@ export default function About({ setAbout, about }) {
                 </div>
                 <div className={style.projectBox}>
                     <h3>My projects</h3>
-                    <p>THREE JS landing with GLTF models</p>
-                    <a href="">Sci-Fi Weapons</a>
-                    <p>Stock for 3d models with preview 3d models</p>
-                    <a href="">Unicorn 3d stock</a>
-                    <p>
-                        Site for online play role-play games with rooms,
-                        videochat and map builder
+                    <p>REACT-THREE-FIBER landing with my models</p>
+                    <div className={style.pLinkBtn}>
+                        <a href="https://antonatnagulov.github.io/rtf-models-landing/">Sci-Fi Weapons</a>
+                    </div>
+                    <p>Stock for sale of 3d models with a preview of models</p>
+                    <div className={style.pLinkBtn}>
+                        <a href="https://github.com/iskan-dar/unicorn-3D-stock">Unicorn 3d stock</a>
+                    </div>
+                    <p style={{textAlign: 'center'}}>
+                        Site for conducting online parties in tabletop role-playing games with map builder, video chat
                     </p>
-                    <a href="https://dnd-deploy.herokuapp.com/">
-                        Dungeon Online
-                    </a>
-                    <p>Mobile simple counter for board games on React Native</p>
-                    <a href="">Simple MTG counter</a>
-                    <p>Anime episode finder on Legacy stack</p>
-                    <a href="https://anime-ep-finder.herokuapp.com/">
-                        Anime EP Finder
-                    </a>
+                    <div className={style.pLinkBtn}>
+                        <a href="https://dnd-deploy.herokuapp.com/">
+                            Dungeon Online
+                        </a>
+                    </div>
+                    <p>Mobile simple counter for MTG board game on React Native</p>
+                    <div className={style.pLinkBtn}>
+                        <a href="https://github.com/AntonAtnagulov/ReactNativeSimpleMtgCounter">Simple MTG counter</a>
+                    </div>
+                    <p>Site to search anime by screenshot and view anime rating</p>
+                    <div className={style.pLinkBtn}>
+                        <a href="https://anime-ep-finder.herokuapp.com/">
+                            Anime EP Finder
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

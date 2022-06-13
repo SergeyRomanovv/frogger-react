@@ -1,7 +1,5 @@
 export default function move(direction, moves, currentLane, currentColumn, lanes, stepStartTimestamp, startMoving, addLane, columns) {
-    console.log({lane: currentLane, column: currentColumn})
     const finalPositions = moves.reduce((position,move) => {
-        console.log(position)
       if(move === 'forward') return {lane: position.lane + 1, column: position.column};
       if(move === 'backward') return {lane: position.lane - 1, column: position.column};
       if(move === 'left') return {lane: position.lane, column: position.column - 1};
