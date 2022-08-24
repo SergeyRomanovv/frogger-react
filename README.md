@@ -3,7 +3,7 @@
 ### Описание:
 Демо сцена где все 3D объекты генерируются в коде.
 Данный проект это клон известной игры Crossy Road, проект задумывался как интерактивное резюме.
-[Frogger-react](https://antonatnagulov.github.io/frogger-react/)
+[Frogger-react](https://sergeyromanovv.github.io/frogger-react/)
 
 ## Начало
 
