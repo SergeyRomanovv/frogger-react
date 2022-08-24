@@ -276,17 +276,15 @@ export default function Game() {
 
           const gameCanvas = document.querySelector('#game')
           const listener = SwipeListener(gameCanvas)
-          console.log(gameCanvas)
+          console.log(listener)
 
-          
+          // gameCanvas.addEventListener('touchend', function (e) {
+          //   moveForwardHandle()
+          //   soundClick()
+          // })
           
           gameCanvas.addEventListener('swipe', function (e) {
             var directions = e.detail.directions;
-            console.log(e.detail)
-           
-            if (e.detail.touch) {
-              console.log('111111')
-            }
 
             if (directions.left) {
               console.log(e.detail)
@@ -303,6 +301,7 @@ export default function Game() {
            
             if (directions.top) {
               moveForwardHandle()
+              soundClick()
             }
            
             if (directions.bottom) {
@@ -311,6 +310,16 @@ export default function Game() {
               move('backward')
             }
           })
+
+          // let lastY = 1;
+          // document.addEventListener("touchmove", function (event) {
+          //   const lastS = document.documentElement.scrollTop;
+          //   if(lastS == 0 && (lastY-event.touches[0].clientY)<0 && event.cancelable){
+          //     event.preventDefault(); 
+          //     event.stopPropagation();
+          //   }
+          //   lastY = event.touches[0].clientY;
+          // },{passive: false});
 
         const renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -333,7 +342,7 @@ export default function Game() {
           }
 
         function animate(timestamp) {
-            requestAnimationFrame( animate );
+          requestAnimationFrame( animate );
 
             if(!previousTimestamp) previousTimestamp = timestamp;
             const delta = timestamp - previousTimestamp;
@@ -483,8 +492,8 @@ export default function Game() {
                 const carMinX = vechicle.position.x - vechicleLength*zoom/2;
                 const carMaxX = vechicle.position.x + vechicleLength*zoom/2;
                 if (chickenMaxX > carMinX && chickenMinX < carMaxX) {
-                    // localIsDead = true;
-                    // setIsDead(true);
+                    localIsDead = true;
+                    setIsDead(true);
                     chicken.scale.z = 0.2;
                     cameraSpeed = 0;
                 }
@@ -499,8 +508,8 @@ export default function Game() {
                 const carMinX = train.position.x - vechicleLength*zoom/2;
                 const carMaxX = train.position.x + vechicleLength*zoom/2;
                 if (chickenMaxX > carMinX && chickenMinX < carMaxX) {
-                    // localIsDead = true;
-                    // setIsDead(true);
+                    localIsDead = true;
+                    setIsDead(true);
                     chicken.scale.z = 0.2;
                     cameraSpeed = 0;
                 }
@@ -572,8 +581,8 @@ export default function Game() {
                 const holeMinX = hole[0];
                 const holeMaxX = hole[1];
                 if (chickenMaxX > holeMinX && chickenMinX < holeMaxX && holeMaxX !== holeMinX) {
-                    // localIsDead = true;
-                    // setIsDead(true);
+                    localIsDead = true;
+                    setIsDead(true);
                     chicken.position.z = -50;
                     cameraSpeed = 0;
                 }
@@ -605,8 +614,8 @@ export default function Game() {
                 const holeMinX = hole[0];
                 const holeMaxX = hole[1];
                 if (chickenMaxX > holeMinX && chickenMinX < holeMaxX) {
-                    // localIsDead = true;
-                    // setIsDead(true);
+                    localIsDead = true;
+                    setIsDead(true);
                     chicken.position.z = -50;
                     cameraSpeed = 0;
                 }
@@ -621,8 +630,8 @@ export default function Game() {
                     // camera.position.x = (chicken.position.x)
                     dirLight.position.x = (chicken.position.x - 100)
                     if (chicken.position.x > 672 || chicken.position.x < -672) {
-                      // localIsDead = true;
-                      // setIsDead(true);
+                      localIsDead = true;
+                      setIsDead(true);
                       chicken.scale.x = 0.2;
                     }
                 }

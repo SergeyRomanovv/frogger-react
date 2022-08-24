@@ -1,6 +1,11 @@
+html {
+    overscroll-behavior-y: contain;
+}
+
 body {
   margin: 0;
   font-family: 'Roboto Mono', monospace;
+  overscroll-behavior-y: contain;
 }
 
 code {
