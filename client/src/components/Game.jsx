@@ -2,7 +2,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import style from './style.module.css';
 import * as THREE from 'three';
+import { useSwipeable } from 'react-swipeable';
 import Chicken from '../generators/Chicken';
+import Chick from '../generators/Chicken copy';
 import generateLanes from '../generators/generateLanes';
 import Lane from '../generators/Lane';
 import myReact from '../generators/Texts/myReact';
@@ -10,6 +12,11 @@ import Restart from './Restart/Restart';
 import Score from './Score/Score';
 import About from './About/About';
 import Billboard from '../generators/Items/Billboard';
+import move from '../generators/Move';
+import addLane from '../generators/addLane';
+import initBillboards from '../generators/initBillboards';
+import initText from '../generators/initText';
+import SwipeListener from 'swipe-listener';
 
 export default function Game() {
     const mountRef = useRef(null);
@@ -22,21 +29,22 @@ export default function Game() {
     const scene = new THREE.Scene();
     const zoom = 2;
     let chickenSize = 12;
-    let moves;
-    const chicken = new Chicken(zoom)
+    let moves = [];
+    let chicken = new Chicken(zoom)
     const distance = 500;
     let height;
     let cameraSpeed = 0.5;
     let positionY;
     let stepTime = 200;
-    let currentLane;
-    let currentColumn;
+    const columns = 17;
+    let currentLane = 0;
+    let currentColumn = Math.floor(columns / 2);
     let previousTimestamp;
     let startMoving;
     let stepStartTimestamp;
+    let vechicleColors;
 
     const positionWidth = 42;
-    const columns = 17;
     const boardWidth = positionWidth * columns;
 
     const camera = new THREE.OrthographicCamera(
@@ -51,59 +59,100 @@ export default function Game() {
   function soundClick() {
     var audio = new Audio();
     audio.src = './sounds/2j.wav';
-    audio.volume = 0.8
+    audio.volume = 0.1;
     audio.autoplay = true;
   }
 
   function coinAudio() {
-    const audio = new Audio()
+    const audio = new Audio();
     audio.src = './sounds/coin.wav'
-    audio.volume = 0.4
+    audio.volume = 0.1
     audio.autoplay = true;
   }
 
   function loseAudio() {
-    const audio = new Audio()
-    audio.src = './sounds/lose.wav'
-    audio.volume = 0.4
+    const audio = new Audio();
+    audio.src = './sounds/lose.wav';
+    audio.volume = 0.1;
     audio.autoplay = true;
   }
 
   if (isDead) {
-    loseAudio()
+    loseAudio();
   }
 
   function aboutHandler() {
-    setAbout(!about)
+    setAbout(!about);
   }
+
+  function move(direction) {
+    const finalPositions = moves.reduce((position,move) => {
+      console.log(position, move)
+      if(move === 'forward') return {lane: position.lane + 1, column: position.column};
+      if(move === 'backward') return {lane: position.lane - 1, column: position.column};
+      if(move === 'left') return {lane: position.lane, column: position.column - 1};
+      if(move === 'right') return {lane: position.lane, column: position.column + 1};
+      return 
+    }, {lane: Number(currentLane), column: Number(currentColumn)})
+  
+    if (direction === 'forward') {
+      console.log({lanes, finalPositions})
+      if(lanes[finalPositions.lane+1]?.type === 'forest' && lanes[finalPositions.lane+1]?.occupiedPositions?.has(finalPositions.column)) return;
+      if(lanes[finalPositions.lane+1]?.type === 'forest2' && lanes[finalPositions.lane+1]?.occupiedPositions?.has(finalPositions.column)) return;
+      if(!stepStartTimestamp) startMoving = true;
+      addLane (scene, lanes, zoom, boardWidth, positionWidth, vechicleColors, height);
+    }
+    else if (direction === 'backward') {
+      if(finalPositions.lane === 0) return;
+      if(lanes[finalPositions.lane-1]?.type === 'forest' && lanes[finalPositions.lane-1]?.occupiedPositions?.has(finalPositions.column)) return;
+      if(lanes[finalPositions.lane-1]?.type === 'forest2' && lanes[finalPositions.lane-1]?.occupiedPositions?.has(finalPositions.column)) return;
+      if(!stepStartTimestamp) startMoving = true;
+    }
+    else if (direction === 'left') {
+      if(finalPositions.column === 0) return;
+      if(lanes[finalPositions.lane]?.type === 'forest' && lanes[finalPositions.lane]?.occupiedPositions?.has(finalPositions.column-1)) return;
+      if(lanes[finalPositions.lane]?.type === 'forest2' && lanes[finalPositions.lane]?.occupiedPositions?.has(finalPositions.column-1)) return;
+      if(!stepStartTimestamp) startMoving = true;
+    }
+    else if (direction === 'right') {
+      if(finalPositions.column === columns - 1 ) return;
+      if(lanes[finalPositions.lane]?.type === 'forest' && lanes[finalPositions.lane]?.occupiedPositions?.has(finalPositions.column+1)) return;
+      if(lanes[finalPositions.lane]?.type === 'forest2' && lanes[finalPositions.lane]?.occupiedPositions?.has(finalPositions.column+1)) return;
+      if(!stepStartTimestamp) startMoving = true;
+    }
+    moves.push(direction);
+    console.log(moves)
+  }
+
+  const moveForwardHandle = () => {
+    move('forward')
+    setScore(currentLane + 1)
+  }
+
+  // const handlers = useSwipeable({
+  //   onTap: moveForwardHandle,
+  //   onSwipedLeft: () => move('left'),
+  //   onSwipedRight: () => move('right'),
+  //   onSwipedDown: () => move('backward'),
+  //   swipeDuration: 300,
+  //   trackMouse: false,
+  //   preventScrollOnSwipe: true,
+  // })
+
+  // const refPassthrough = (el) => {
+  //   handlers.ref(el)
+
+  //   mountRef.current = el
+  // }
 
     useEffect(() => {
         scene.background = new THREE.Color('#141517');
 
-        const vechicleColors = [0xa52523, 0xbdb638, 0x78b14b, 0x1a5b9c];
-        chicken.position.z = -1
+        vechicleColors = [0xa52523, 0xbdb638, 0x78b14b, 0x1a5b9c];
+        chicken.position.z = -1;
 
-        const billboard = new Billboard(zoom, 'Redux', '#B845F2', -60, 30)
-        billboard.position.x = 21 * zoom * 13
-        billboard.position.y = 21 * zoom
-
-        const billboard2 = new Billboard(zoom, 'React', '#02B8E1', -60, 30)
-        billboard2.position.x = 21 * zoom * -13
-        billboard2.position.y = (21 * zoom) + (84 * 5)
-
-        const billboard3 = new Billboard(zoom, 'NodeJS', '#0E681B', -70, 30)
-        billboard3.position.x = 21 * zoom * 13
-        billboard3.position.y = (21 * zoom) + (84 * 10)
-
-        const billboard4 = new Billboard(zoom, 'PostgreSQL', '#1E76A7', -80, 22)
-        billboard4.position.x = 21 * zoom * -13
-        billboard4.position.y = (21 * zoom) + (84 * 15)
-
-        const billboard5 = new Billboard(zoom, 'ThreeJS', '#353535', -70, 27)
-        billboard5.position.x = 21 * zoom * 13
-        billboard5.position.y = (21 * zoom) + (84 * 20)
-
-        scene.add(chicken, billboard, billboard2, billboard3, billboard4, billboard5);
+        scene.add(chicken);
+        initBillboards(scene, zoom)
 
         const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
         scene.add(hemiLight);
@@ -145,22 +194,7 @@ export default function Game() {
         camera.position.x = initialCameraPositionX;
         camera.position.z = distance;
 
-        const text = new myReact('Hi, my name is {enter name}')
-        text.position.z = 2
-        text.position.x = (-boardWidth/2) * zoom + 100
-        text.position.y = -200
-
-        const text2 = new myReact('I am a frontend developer')
-        text2.position.z = 2
-        text2.position.x = (-boardWidth/2) * zoom + 400
-        text2.position.y = -350
-
-        const text3 = new myReact('Jump ahead to see my stack')
-        text3.position.z = 2
-        text3.position.x = (-boardWidth/2) * zoom + 100
-        text3.position.y = -500
-
-        scene.add(text, text2, text3)
+        initText(scene, zoom, boardWidth, )
 
         const initaliseValues = () => {
             lanes = generateLanes(zoom, boardWidth, positionWidth, scene, vechicleColors, height);
@@ -171,7 +205,6 @@ export default function Game() {
             previousTimestamp = null;
 
             startMoving = false;
-            moves = [];
 
             chicken.position.x = 0;
             chicken.position.y = 0;
@@ -184,57 +217,6 @@ export default function Game() {
         };
 
         initaliseValues();
-
-        const addLane = () => {
-            const index = lanes.length;
-            let lane = new Lane(index, zoom, boardWidth, positionWidth, vechicleColors, height);
-            while(lanes[lanes.length-1].type === 'waterpads' && lane.type === 'waterpads'){
-                lane = new Lane(index, zoom, boardWidth, positionWidth, vechicleColors, height);
-            }
-            if (lanes[lanes.length-1].type === 'river' && lane.type === 'river'){
-                lane.direction = !lanes[lanes.length-1].direction
-            }
-            lane.mesh.position.y = index*positionWidth*zoom;
-            scene.add(lane.mesh);
-            lanes.push(lane);
-          }
-
-          console.log(lanes, -1428-714, 1428+714)
-
-          function move(direction) {
-            const finalPositions = moves.reduce((position,move) => {
-              if(move === 'forward') return {lane: position.lane + 1, column: position.column};
-              if(move === 'backward') return {lane: position.lane - 1, column: position.column};
-              if(move === 'left') return {lane: position.lane, column: position.column - 1};
-              if(move === 'right') return {lane: position.lane, column: position.column + 1};
-            }, {lane: currentLane, column: currentColumn})
-
-            if (direction === 'forward') {
-              if(lanes[finalPositions.lane+1].type === 'forest' && lanes[finalPositions.lane+1].occupiedPositions.has(finalPositions.column)) return;
-              if(lanes[finalPositions.lane+1].type === 'forest2' && lanes[finalPositions.lane+1].occupiedPositions.has(finalPositions.column)) return;
-              if(!stepStartTimestamp) startMoving = true;
-              addLane();
-            }
-            else if (direction === 'backward') {
-              if(finalPositions.lane === 0) return;
-              if(lanes[finalPositions.lane-1].type === 'forest' && lanes[finalPositions.lane-1].occupiedPositions.has(finalPositions.column)) return;
-              if(lanes[finalPositions.lane-1].type === 'forest2' && lanes[finalPositions.lane-1].occupiedPositions.has(finalPositions.column)) return;
-              if(!stepStartTimestamp) startMoving = true;
-            }
-            else if (direction === 'left') {
-              if(finalPositions.column === 0) return;
-              if(lanes[finalPositions.lane].type === 'forest' && lanes[finalPositions.lane].occupiedPositions.has(finalPositions.column-1)) return;
-              if(lanes[finalPositions.lane].type === 'forest2' && lanes[finalPositions.lane].occupiedPositions.has(finalPositions.column-1)) return;
-              if(!stepStartTimestamp) startMoving = true;
-            }
-            else if (direction === 'right') {
-              if(finalPositions.column === columns - 1 ) return;
-              if(lanes[finalPositions.lane].type === 'forest' && lanes[finalPositions.lane].occupiedPositions.has(finalPositions.column+1)) return;
-              if(lanes[finalPositions.lane].type === 'forest2' && lanes[finalPositions.lane].occupiedPositions.has(finalPositions.column+1)) return;
-              if(!stepStartTimestamp) startMoving = true;
-            }
-            moves.push(direction);
-          }
 
           window.addEventListener("keydown", event => {
             if (event.keyCode == '38' && localIsDead === false) {
@@ -266,30 +248,78 @@ export default function Game() {
           window.addEventListener("keyup", event => {
             if (event.keyCode == '38' && localIsDead === false) {
               chicken.scale.z = 1
-              move('forward')
+              // move('forward')
+              // console.log({scene, lanes, zoom, boardWidth, positionWidth, vechicleColors, height})
+              moveForwardHandle()
               soundClick()
               cameraSpeed += 0.01;
-              setScore(currentLane + 1)
             }
             else if (event.keyCode == '40' && localIsDead === false) {
-              // down arrow
+              //down arrow
               chicken.scale.z = 1
               soundClick()
               move('backward')
             }
             else if (event.keyCode == '37' && localIsDead === false) {
-              // left arrow
+              //left arrow
               chicken.scale.z = 1
               soundClick()
               move('left')
             }
             else if (event.keyCode == '39' && localIsDead === false) {
-              // right arrow
+              //right arrow
               chicken.scale.z = 1
               soundClick()
               move('right')
             }
           });
+
+          const gameCanvas = document.querySelector('#game')
+          const listener = SwipeListener(gameCanvas)
+          console.log(listener)
+
+          // gameCanvas.addEventListener('touchend', function (e) {
+          //   moveForwardHandle()
+          //   soundClick()
+          // })
+          
+          gameCanvas.addEventListener('swipe', function (e) {
+            var directions = e.detail.directions;
+
+            if (directions.left) {
+              console.log(e.detail)
+              chicken.scale.z = 1
+              soundClick()
+              move('left')
+            }
+           
+            if (directions.right) {
+              chicken.scale.z = 1
+              soundClick()
+              move('right')
+            }
+           
+            if (directions.top) {
+              moveForwardHandle()
+              soundClick()
+            }
+           
+            if (directions.bottom) {
+              chicken.scale.z = 1
+              soundClick()
+              move('backward')
+            }
+          })
+
+          // let lastY = 1;
+          // document.addEventListener("touchmove", function (event) {
+          //   const lastS = document.documentElement.scrollTop;
+          //   if(lastS == 0 && (lastY-event.touches[0].clientY)<0 && event.cancelable){
+          //     event.preventDefault(); 
+          //     event.stopPropagation();
+          //   }
+          //   lastY = event.touches[0].clientY;
+          // },{passive: false});
 
         const renderer = new THREE.WebGLRenderer({
             alpha: true,
@@ -303,8 +333,16 @@ export default function Game() {
 
         dirLight.target = chicken;
 
+        window.addEventListener( 'resize', onWindowResize, false );
+
+          function onWindowResize(){
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight );
+          }
+
         function animate(timestamp) {
-            requestAnimationFrame( animate );
+          requestAnimationFrame( animate );
 
             if(!previousTimestamp) previousTimestamp = timestamp;
             const delta = timestamp - previousTimestamp;
@@ -401,7 +439,7 @@ export default function Game() {
                 }
                 case 'left': {
                   const positionX = (currentColumn*positionWidth+positionWidth/2)*zoom -boardWidth*zoom/2 - moveDeltaDistance;
-                  // camera.position.x = initialCameraPositionX + positionX;
+                  camera.position.x = initialCameraPositionX + positionX;
                   dirLight.position.x = initialDirLightPositionX + positionX;
                   chicken.position.x = positionX; // initial chicken position is 0
                   chicken.position.z = jumpDeltaDistance;
@@ -410,7 +448,7 @@ export default function Game() {
                 }
                 case 'right': {
                   const positionX = (currentColumn*positionWidth+positionWidth/2)*zoom -boardWidth*zoom/2 + moveDeltaDistance;
-                  // camera.position.x = initialCameraPositionX + positionX;
+                  camera.position.x = initialCameraPositionX + positionX;
                   dirLight.position.x = initialDirLightPositionX + positionX;
                   chicken.position.x = positionX;
 
@@ -494,7 +532,7 @@ export default function Game() {
                   coin.position.z = -30
                   coin.position.x = 2000
                   coinAudio()
-                  setScore((prev) => prev + 3)
+                  // setScore((prev) => prev + 3)
             }
           }
 
@@ -514,7 +552,7 @@ export default function Game() {
               coin.position.z = -30
               coin.position.x = 2000
               coinAudio()
-              setScore((prev) => prev + 3)
+              // setScore((prev) => prev + 3)
           }
         }
 
@@ -625,7 +663,7 @@ export default function Game() {
 
     return (
         <>
-            <div className={style.game} ref={mountRef} />
+            <div id='game' className={style.game} ref={mountRef} />
             <div className={style.scoreBox}>
               <Score score={score}/>
             </div>
@@ -644,7 +682,7 @@ export default function Game() {
               about === true ?
               (
                 <>
-                  <About/>
+                  <About setAbout={setAbout} about={about}/>
                 </>
               ) : (
                 null

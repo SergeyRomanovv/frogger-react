@@ -5,7 +5,6 @@ export default function Restart({restart, setRestart}) {
 
   const restartHandler = () => {
     setRestart(true)
-    console.log(restart);
   }
 
   return (

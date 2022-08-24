@@ -9,7 +9,7 @@ export default function logoRedux(inputText, fontSize) {
 
     const loader = new FontLoader();
 
-    loader.load( '/font.json', function ( font ) {
+    loader.load( './font.json', function ( font ) {
 
 	const geometry = new TextGeometry( inputText , {
 		font: font,
