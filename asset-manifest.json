@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/frogger-react/static/css/main.5f93db23.css",
+    "main.js": "/frogger-react/static/js/main.c35258ad.js",
+    "static/js/787.e058ae7c.chunk.js": "/frogger-react/static/js/787.e058ae7c.chunk.js",
+    "static/media/Bg1.png": "/frogger-react/static/media/Bg1.d123f6e2264bd34b9abd.png",
+    "index.html": "/frogger-react/index.html",
+    "main.5f93db23.css.map": "/frogger-react/static/css/main.5f93db23.css.map",
+    "main.c35258ad.js.map": "/frogger-react/static/js/main.c35258ad.js.map",
+    "787.e058ae7c.chunk.js.map": "/frogger-react/static/js/787.e058ae7c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5f93db23.css",
+    "static/js/main.c35258ad.js"
+  ]
+}
